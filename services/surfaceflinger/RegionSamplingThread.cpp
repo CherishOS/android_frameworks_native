@@ -274,6 +274,10 @@ void RegionSamplingThread::captureSample() {
     {
         // TODO(b/159112860): Don't keep sp<DisplayDevice> outside of SF main thread
         const sp<const DisplayDevice> display = mFlinger.getDefaultDisplayDevice();
+        if (display == nullptr) {
+            ALOGE("%s: failed to get valid display device", __func__);
+            return;
+        }
         displayWeak = display;
         layerStack = display->getLayerStack();
         orientation = ui::Transform::toRotationFlags(display->getOrientation());
