@@ -1352,6 +1352,7 @@ private:
     bool mSetActiveModePending = false;
 
     bool mLumaSampling = true;
+    bool mForceHwcBrightness = false;
     sp<RegionSamplingThread> mRegionSamplingThread;
     sp<FpsReporter> mFpsReporter;
     sp<TunnelModeEnabledReporter> mTunnelModeEnabledReporter;
