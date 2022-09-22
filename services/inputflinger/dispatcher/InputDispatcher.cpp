@@ -775,7 +775,9 @@ void InputDispatcher::dispatchOnceInnerLocked(nsecs_t* nextWakeupTime) {
         }
 
         // Poke user activity for this event.
-        if (mPendingEvent->policyFlags & POLICY_FLAG_PASS_TO_USER) {
+        if ((mPendingEvent->policyFlags & POLICY_FLAG_PASS_TO_USER)
+        	|| (mPendingEvent->policyFlags & POLICY_FLAG_POKE_USER_ACTIVIITY) 
+        	) {
             pokeUserActivityLocked(mPendingEvent.get());
         }
     }
@@ -2841,7 +2843,8 @@ void InputDispatcher::pokeUserActivityLocked(const EventEntry* eventEntry) {
     sp<WindowInfoHandle> focusedWindowHandle = getFocusedWindowHandleLocked(displayId);
     if (focusedWindowHandle != nullptr) {
         const WindowInfo* info = focusedWindowHandle->getInfo();
-        if (info->inputConfig.test(WindowInfo::InputConfig::DISABLE_USER_ACTIVITY)) {
+        if (info->inputConfig.test(WindowInfo::InputConfig::DISABLE_USER_ACTIVITY) &&
+                !(eventEntry->policyFlags & POLICY_FLAG_POKE_USER_ACTIVIITY)) {
             if (DEBUG_DISPATCH_CYCLE) {
                 ALOGD("Not poking user activity: disabled by window '%s'.", info->name.c_str());
             }

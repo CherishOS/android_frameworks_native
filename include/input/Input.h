@@ -271,6 +271,9 @@ enum {
     // The input event should still be sent to the InputDispatcher so that it can see all
     // input events received include those that it will not deliver.
     POLICY_FLAG_PASS_TO_USER = 0x40000000,
+
+    POLICY_FLAG_POKE_USER_ACTIVIITY = 0x00100000,
+
 };
 
 /**
