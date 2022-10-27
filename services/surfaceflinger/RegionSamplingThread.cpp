@@ -203,17 +203,7 @@ float sampleArea(const uint32_t* data, int32_t width, int32_t height, int32_t st
         return 0.0f;
     }
 
-    // (b/133849373) ROT_90 screencap images produced upside down
     auto area = sample_area;
-    if (orientation & ui::Transform::ROT_90) {
-        area.top = height - area.top;
-        area.bottom = height - area.bottom;
-        std::swap(area.top, area.bottom);
-
-        area.left = width - area.left;
-        area.right = width - area.right;
-        std::swap(area.left, area.right);
-    }
 
     const uint32_t pixelCount = (area.bottom - area.top) * (area.right - area.left);
     uint32_t accumulatedLuma = 0;
