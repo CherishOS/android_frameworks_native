@@ -119,8 +119,7 @@ public:
                               uint32_t policyFlags) = 0;
 
     /* Poke user activity for an event dispatched to a window. */
-    virtual void pokeUserActivity(nsecs_t eventTime, int32_t eventType, int32_t displayId,
-                                  int32_t keyCode) = 0;
+    virtual void pokeUserActivity(nsecs_t eventTime, int32_t eventType, int32_t displayId) = 0;
 
     /*
      * Return true if the provided event is stale, and false otherwise. Used for determining
