@@ -30,8 +30,13 @@ namespace input_flags = com::android::input::flags;
 namespace {
 
 bool applyInputEventProfile() {
-    static constexpr pid_t CURRENT_THREAD = 0;
-    return SetTaskProfiles(CURRENT_THREAD, {"InputPolicy"});
+#if defined(__ANDROID__)
+    return SetTaskProfiles(gettid(), {"InputPolicy"});
+#else
+    // Since thread information (gettid()) is not available and there's no benefit of
+    // applying the task profile on host, return directly.
+    return true;
+#endif
 }
 
 class JvmAttacher {
