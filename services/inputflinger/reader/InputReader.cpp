@@ -122,9 +122,8 @@ std::optional<DeviceId> getDeviceIdOfNewGesture(const NotifyArgs& args) {
 
 InputReader::InputReader(std::shared_ptr<EventHubInterface> eventHub,
                          const sp<InputReaderPolicyInterface>& policy,
-                         InputListenerInterface& listener, JNIEnv* env)
+                         InputListenerInterface& listener)
       : mContext(this),
-        mJniEnv(env),
         mEventHub(eventHub),
         mPolicy(policy),
         mNextListener(listener),
@@ -148,7 +147,7 @@ status_t InputReader::start() {
     }
     mThread = std::make_unique<InputThread>(
             "InputReader", [this]() { loopOnce(); }, [this]() { mEventHub->wake(); },
-            /*isInCriticalPath=*/true, mJniEnv);
+            /*isInCriticalPath=*/true);
     return OK;
 }
 

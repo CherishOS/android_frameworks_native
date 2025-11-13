@@ -20,8 +20,8 @@
 namespace android {
 
 std::unique_ptr<InputDispatcherInterface> createInputDispatcher(
-        InputDispatcherPolicyInterface& policy, JNIEnv* env) {
-    return std::make_unique<android::inputdispatcher::InputDispatcher>(policy, env);
+        InputDispatcherPolicyInterface& policy) {
+    return std::make_unique<android::inputdispatcher::InputDispatcher>(policy);
 }
 
 } // namespace android

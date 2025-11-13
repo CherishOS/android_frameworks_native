@@ -15,7 +15,6 @@
  */
 
 #include <utils/StrongPointer.h>
-#include "jni.h"
 
 namespace android {
 
@@ -24,7 +23,6 @@ class InputReaderPolicyInterface;
 class InputListenerInterface;
 
 std::unique_ptr<InputReaderInterface> createInputReader(
-        const sp<InputReaderPolicyInterface>& policy, InputListenerInterface& listener,
-        JNIEnv* env);
+        const sp<InputReaderPolicyInterface>& policy, InputListenerInterface& listener);
 
 } // namespace android

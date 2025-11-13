@@ -90,13 +90,12 @@ bool isInputTracingEnabled() {
 }
 
 // Create the input tracing backend that writes to perfetto from a single thread.
-std::unique_ptr<trace::InputTracingBackendInterface> createInputTracingBackendIfEnabled(
-        JNIEnv* env) {
+std::unique_ptr<trace::InputTracingBackendInterface> createInputTracingBackendIfEnabled() {
     if (!isInputTracingEnabled()) {
         return nullptr;
     }
-    return std::make_unique<trace::impl::ThreadedBackend<
-            trace::impl::PerfettoBackend>>(trace::impl::PerfettoBackend(), env);
+    return std::make_unique<trace::impl::ThreadedBackend<trace::impl::PerfettoBackend>>(
+            trace::impl::PerfettoBackend());
 }
 
 template <class Entry>
@@ -896,15 +895,12 @@ std::string dumpWindowForTouchOcclusion(const WindowInfo& info, bool isTouchedWi
 
 // --- InputDispatcher ---
 
-InputDispatcher::InputDispatcher(InputDispatcherPolicyInterface& policy, JNIEnv* env)
-      : InputDispatcher(policy, createInputTracingBackendIfEnabled(env), env) {}
+InputDispatcher::InputDispatcher(InputDispatcherPolicyInterface& policy)
+      : InputDispatcher(policy, createInputTracingBackendIfEnabled()) {}
 
 InputDispatcher::InputDispatcher(InputDispatcherPolicyInterface& policy,
-                                 std::unique_ptr<trace::InputTracingBackendInterface> traceBackend,
-                                 JNIEnv* env)
-      : mJniEnv(env),
-        mPolicy(policy),
-
+                                 std::unique_ptr<trace::InputTracingBackendInterface> traceBackend)
+      : mPolicy(policy),
         mLooper(sp<Looper>::make(false)),
         mPendingEvent(nullptr),
         mLastDropReason(DropReason::NOT_DROPPED),
@@ -964,7 +960,7 @@ status_t InputDispatcher::start() {
     }
     mThread = std::make_unique<InputThread>(
             "InputDispatcher", [this]() { dispatchOnce(); }, [this]() { mLooper->wake(); },
-            /*isInCriticalPath=*/true, mJniEnv);
+            /*isInCriticalPath=*/true);
     return OK;
 }
 

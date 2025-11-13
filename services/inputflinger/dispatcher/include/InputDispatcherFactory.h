@@ -25,6 +25,6 @@ namespace android {
 
 // This factory method is used to encapsulate implementation details in internal header files.
 std::unique_ptr<InputDispatcherInterface> createInputDispatcher(
-        InputDispatcherPolicyInterface& policy, JNIEnv* env);
+        InputDispatcherPolicyInterface& policy);
 
 } // namespace android

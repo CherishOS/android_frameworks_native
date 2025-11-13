@@ -17,8 +17,7 @@
 #pragma once
 
 #include <functional>
-#include <thread>
-#include "jni.h"
+#include <utils/Thread.h>
 
 namespace android {
 
@@ -31,15 +30,14 @@ namespace android {
 class InputThread {
 public:
     explicit InputThread(std::string name, std::function<void()> loop, std::function<void()> wake,
-                         bool isInCriticalPath, JNIEnv* env);
+                         bool isInCriticalPath);
     virtual ~InputThread();
 
     bool isCallingThread();
 
 private:
     std::function<void()> mThreadWake;
-    std::thread mThread;
-    std::atomic_bool mStopThread = false;
+    sp<Thread> mThread;
 };
 
 } // namespace android

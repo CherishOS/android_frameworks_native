@@ -23,7 +23,6 @@
 #include <utils/StrongPointer.h>
 #include <functional>
 #include "InputThread.h"
-#include "jni.h"
 
 namespace android {
 
@@ -42,12 +41,11 @@ using namespace aidl::com::android::server::inputflinger;
 
 class InputFilterThread : public BnInputThread {
 public:
-    InputFilterThread(std::shared_ptr<IInputThreadCallback> callback, JNIEnv* env)
-          : mCallback(callback) {
+    InputFilterThread(std::shared_ptr<IInputThreadCallback> callback) : mCallback(callback) {
         mLooper = sp<Looper>::make(/*allowNonCallbacks=*/false);
         mThread = std::make_unique<InputThread>(
                 "InputFilter", [this]() { loopOnce(); }, [this]() { mLooper->wake(); },
-                /*isInCriticalPath=*/false, env);
+                /*isInCriticalPath=*/false);
     }
 
     ndk::ScopedAStatus finish() override {
@@ -81,8 +79,8 @@ private:
 } // namespace
 
 InputFilterCallbacks::InputFilterCallbacks(InputListenerInterface& listener,
-                                           InputFilterPolicyInterface& policy, JNIEnv* env)
-      : mNextListener(listener), mPolicy(policy), mJniEnv(env) {}
+                                           InputFilterPolicyInterface& policy)
+      : mNextListener(listener), mPolicy(policy) {}
 
 ndk::ScopedAStatus InputFilterCallbacks::sendKeyEvent(const AidlKeyEvent& event) {
     mNextListener.notifyKey(keyEventToNotifyKeyArgs(event));
@@ -103,7 +101,7 @@ ndk::ScopedAStatus InputFilterCallbacks::onModifierStateChanged(int32_t modifier
 ndk::ScopedAStatus InputFilterCallbacks::createInputFilterThread(
         const std::shared_ptr<IInputThreadCallback>& callback,
         std::shared_ptr<IInputThread>* aidl_return) {
-    *aidl_return = ndk::SharedRefBase::make<InputFilterThread>(callback, mJniEnv);
+    *aidl_return = ndk::SharedRefBase::make<InputFilterThread>(callback);
     return ndk::ScopedAStatus::ok();
 }
 

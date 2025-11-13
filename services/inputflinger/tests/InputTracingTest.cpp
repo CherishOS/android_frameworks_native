@@ -104,12 +104,10 @@ protected:
         impl::PerfettoBackend::sPackageManagerProvider = []() { return kPackageManager; };
         mFakePolicy = std::make_unique<FakeInputDispatcherPolicy>();
 
-        auto tracingBackend = std::make_unique<
-                impl::ThreadedBackend<impl::PerfettoBackend>>(impl::PerfettoBackend(),
-                                                              /*env=*/nullptr);
+        auto tracingBackend = std::make_unique<impl::ThreadedBackend<impl::PerfettoBackend>>(
+                impl::PerfettoBackend());
         mRequestTracerIdle = tracingBackend->getIdleWaiterForTesting();
-        mDispatcher = std::make_unique<InputDispatcher>(*mFakePolicy, std::move(tracingBackend),
-                                                        /*env=*/nullptr);
+        mDispatcher = std::make_unique<InputDispatcher>(*mFakePolicy, std::move(tracingBackend));
 
         mDispatcher->setInputDispatchMode(/*enabled=*/true, /*frozen=*/false);
         ASSERT_EQ(OK, mDispatcher->start());
